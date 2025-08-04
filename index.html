@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Loja</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo" contenteditable="true" data-placeholder="Nome da sua loja">Minha Loja</h1>
+            <p class="subtitle" contenteditable="true" data-placeholder="Descrição da sua loja">Os melhores produtos para você</p>
+        </div>
+    </header>
+
+    <!-- Admin Controls -->
+    <div class="admin-controls">
+        <div class="container">
+            <button id="toggleAdmin" class="btn-admin">
+                <i class="fas fa-cog"></i> Modo Admin
+            </button>
+            <div id="adminPanel" class="admin-panel hidden">
+                <button id="addProduct" class="btn-primary">
+                    <i class="fas fa-plus"></i> Adicionar Produto
+                </button>
+                <button id="exportData" class="btn-secondary">
+                    <i class="fas fa-download"></i> Exportar Dados
+                </button>
+                <input type="file" id="importData" accept=".json" style="display: none;">
+                <button id="importBtn" class="btn-secondary">
+                    <i class="fas fa-upload"></i> Importar Dados
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Section -->
+    <main class="main">
+        <div class="container">
+            <div id="productsGrid" class="products-grid">
+                <!-- Produtos serão inseridos aqui dinamicamente -->
+            </div>
+            
+            <!-- Mensagem quando não há produtos -->
+            <div id="emptyState" class="empty-state">
+                <i class="fas fa-shopping-bag"></i>
+                <h3>Nenhum produto cadastrado</h3>
+                <p>Clique em "Modo Admin" e depois em "Adicionar Produto" para começar</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 <span contenteditable="true">Minha Loja</span>. Todos os direitos reservados.</p>
+            <div class="contact-info">
+                <p contenteditable="true" data-placeholder="Adicione suas informações de contato">
+                    📱 (11) 99999-9999 | 📧 contato@minhaloja.com
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal para adicionar/editar produto -->
+    <div id="productModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Adicionar Produto</h3>
+                <button id="closeModal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <div class="form-group">
+                        <label for="productName">Nome do Produto *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productPrice">Preço *</label>
+                        <input type="text" id="productPrice" placeholder="R$ 0,00" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productDescription">Descrição</label>
+                        <textarea id="productDescription" rows="3" placeholder="Descreva seu produto..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Imagens do Produto</label>
+                        <div class="images-section">
+                            <div class="image-input-group">
+                                <input type="file" id="productImageFile" accept="image/*" multiple>
+                                <span>ou</span>
+                                <input type="url" id="productImageUrl" placeholder="URL da imagem">
+                                <button type="button" id="addImageUrl" class="btn-secondary">Adicionar URL</button>
+                            </div>
+                            <div id="imagesPreview" class="images-preview">
+                                <!-- Imagens serão inseridas aqui -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="cancelBtn" class="btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn-primary">Salvar Produto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Login Admin -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content login-modal">
+            <div class="modal-header">
+                <h3>Acesso Administrador</h3>
+                <button id="closeLoginModal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="adminUsername">Usuário</label>
+                        <input type="text" id="adminUsername" required autocomplete="username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminPassword">Senha</label>
+                        <input type="password" id="adminPassword" required autocomplete="current-password">
+                    </div>
+                    
+                    <div id="loginError" class="login-error hidden">
+                        Usuário ou senha incorretos!
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="cancelLoginBtn" class="btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn-primary">Entrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox para visualização de imagens -->
+    <div id="lightbox" class="lightbox hidden">
+        <div class="lightbox-content">
+            <button id="closeLightbox" class="lightbox-close">&times;</button>
+            <button id="prevImage" class="lightbox-nav lightbox-prev">&#8249;</button>
+            <button id="nextImage" class="lightbox-nav lightbox-next">&#8250;</button>
+            <img id="lightboxImage" src="" alt="Imagem do produto">
+            <div class="lightbox-counter">
+                <span id="currentImageIndex">1</span> / <span id="totalImages">1</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
